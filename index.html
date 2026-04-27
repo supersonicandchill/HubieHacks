@@ -1,417 +1,1495 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;900&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet"/>
-<title>Away Game — Christian Parent’s Playbook</title>
-<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
-<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
-<style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { background: #f8f9fa; font-family: 'DM Sans', system-ui, sans-serif; color: #1a1a1a; line-height: 1.6; }
-button { cursor: pointer; }
-.progress-bar { height: 10px; background: #e9ecef; border-radius: 9999px; overflow: hidden; }
-.progress-fill { height: 100%; transition: width 0.5s ease; }
-.team-card { background: #fff; border: 1px solid #dee2e6; border-radius: 16px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); }
-.delete-btn { background: #fee2e2; color: #ef4444; border: none; width: 32px; height: 32px; border-radius: 8px; font-size: 18px; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Huberman Daily Optimizer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        slate: {
+                            950: '#0f172a'
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['Georgia', 'serif'],
+                        sans: ['system-ui', '-apple-system', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        body {
+            transition: background-color 0.3s ease, color 0.3s ease;
+            font-size: 16px;
+        }
+
+        /* Mobile-first approach */
+        @media (max-width: 1024px) {
+            body {
+                font-size: 15px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            body {
+                font-size: 14px;
+            }
+        }
+
+        .habit-row {
+            transition: all 0.2s ease;
+            cursor: pointer;
+            min-height: 60px;
+            padding: 16px !important;
+        }
+
+        @media (max-width: 640px) {
+            .habit-row {
+                min-height: 64px;
+                padding: 14px !important;
+            }
+        }
+
+        .habit-row:active {
+            background-color: rgba(59, 130, 246, 0.05);
+            transform: scale(0.98);
+        }
+
+        .habit-row:hover {
+            transform: translateX(4px);
+        }
+
+        @media (max-width: 768px) {
+            .habit-row:hover {
+                transform: none;
+            }
+        }
+
+        .habit-row.completed {
+            opacity: 0.6;
+        }
+
+        .check-icon {
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            font-size: 1.5rem;
+        }
+
+        @media (max-width: 640px) {
+            .check-icon {
+                font-size: 1.25rem;
+            }
+        }
+
+        .habit-row.completed .check-icon {
+            transform: scale(1.15) rotate(5deg);
+        }
+
+        .expand-card {
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                max-height: 0;
+                overflow: hidden;
+            }
+            to {
+                opacity: 1;
+                max-height: 500px;
+            }
+        }
+
+        .progress-bar {
+            transition: width 0.5s ease, background-color 0.3s ease;
+        }
+
+        input[type="checkbox"] {
+            cursor: pointer;
+            accent-color: rgb(59, 130, 246);
+            width: 24px;
+            height: 24px;
+            min-width: 24px;
+            min-height: 24px;
+        }
+
+        @media (max-width: 640px) {
+            input[type="checkbox"] {
+                width: 20px;
+                height: 20px;
+                min-width: 20px;
+                min-height: 20px;
+            }
+        }
+
+        input[type="number"],
+        textarea,
+        input[type="text"] {
+            font-size: 16px;
+        }
+
+        button {
+            min-height: 44px;
+            font-size: 16px;
+            padding: 10px 16px;
+        }
+
+        @media (max-width: 640px) {
+            button {
+                min-height: 48px;
+                padding: 12px 16px;
+                font-size: 15px;
+            }
+        }
+
+        /* Modal optimizations */
+        #wimHofModal > div,
+        #sunlightModal > div,
+        #hydrationModal > div {
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        @media (max-width: 640px) {
+            #wimHofModal > div,
+            #sunlightModal > div,
+            #hydrationModal > div {
+                width: 95vw;
+                max-height: 85vh;
+            }
+        }
+
+        /* Tab nav mobile optimization */
+        nav {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        @media (max-width: 1024px) {
+            nav {
+                display: flex;
+                gap: 0;
+                border-bottom: 2px solid;
+                border-color: inherit;
+                border-right: none;
+                border-left: none;
+                border-top: none;
+            }
+
+            nav button {
+                min-width: 20%;
+                text-align: center;
+                border-right: 1px solid;
+                border-bottom: none;
+                border-left: none;
+                border-top: none;
+                border-radius: 0;
+                padding: 12px 8px;
+            }
+
+            nav button:last-child {
+                border-right: none;
+            }
+        }
+
+        @media (max-width: 640px) {
+            nav button {
+                min-width: 25%;
+                padding: 10px 6px;
+                font-size: 12px;
+            }
+        }
+
+        /* Summary bar mobile */
+        @media (max-width: 640px) {
+            header .grid {
+                gap: 8px;
+            }
+
+            header .grid > div {
+                padding: 12px !important;
+            }
+
+            header h1 {
+                font-size: 22px;
+            }
+
+            header p {
+                font-size: 11px;
+            }
+        }
+
+        /* Habit card typography */
+        .habit-row p {
+            word-break: break-word;
+            overflow-wrap: break-word;
+        }
+
+        @media (max-width: 640px) {
+            .habit-row p {
+                line-height: 1.4;
+            }
+        }
+
+        /* Modal content padding */
+        @media (max-width: 640px) {
+            .rounded-lg.p-6 {
+                padding: 16px !important;
+            }
+
+            .space-y-4 > * + * {
+                margin-top: 12px !important;
+            }
+
+            .space-y-3 > * + * {
+                margin-top: 10px !important;
+            }
+        }
+    </style>
 </head>
-<body>
-<div id="root"></div>
-<script type="text/babel" data-presets="react">
-const { useState } = React;
+<body class="bg-white dark:bg-slate-950 text-gray-900 dark:text-gray-100">
 
-// ─── STORAGE ──────────────────────────────────────────────────────────────────
-function load(key, fb) { try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fb; } catch { return fb; } }
-function save(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); } catch {} }
-let _c = Date.now();
-function uid() { return "x" + (++_c).toString(36); }
-
-// ─── COLORS ───────────────────────────────────────────────────────────────────
-const C = {
-  bg0: "#f8f9fa", bg1: "#ffffff", bg2: "#f1f3f5", bg3: "#e9ecef",
-  border: "#dee2e6", borderHi: "#ff8c00",
-  text: "#1a1a1a", textSub: "#495057", textMuted: "#6c757d",
-  orange: "#ff8c00", green: "#00b36b"
-};
-
-// ─── VIRTUES (Complete) ───────────────────────────────────────────────────────
-const VIRTUES = {
-  L: { key:"L", label:"Love", icon:"❤️", tagline:"Others-first in a me-first culture", color:"#ff4d4d", bg:"#fff0f0", border:"#ff8c00",
-       scoreMeaning: "0=Never • 1=Rarely • 2=Sometimes • 3=Consistently puts others first",
-       strong: ["Celebrates teammates' success", "Shows genuine kindness", "Puts team above self"],
-       weak:   ["Selfish on and off the field", "Dismisses or ignores teammates", "Only cheers for own highlights"],
-       develop: ["After each game, name one teammate who helped you win", "Do one act of encouragement before you leave the field", "Pray: 'Lord, help me love my teammates the way You love me'"] },
-  P: { key:"P", label:"Peace", icon:"☮️", tagline:"Calm anchored in Christ", color:"#00b36b", bg:"#f0fff4", border:"#ff8c00",
-       scoreMeaning: "0=Constant anxiety • 1=Occasional calm • 2=Usually calm • 3=Peace that guards the heart",
-       strong: ["Stays composed under pressure", "Calms teammates in tense moments", "Bounces back quickly from mistakes"],
-       weak:   ["Anxious or panicked when things go wrong", "Spreads tension to teammates", "Dwells on errors during play"],
-       develop: ["Practice three slow breaths before any big moment", "Write down one worry this week and give it to God in prayer", "Memorize Phil. 4:7 — let it anchor your pregame routine"] },
-  S: { key:"S", label:"Self-Control", icon:"🛡️", tagline:"Responding instead of reacting", color:"#0077cc", bg:"#f0f8ff", border:"#ff8c00",
-       scoreMeaning: "0=Frequent outbursts • 1=Improving • 2=Usually controlled • 3=Strong self-discipline",
-       strong: ["Responds to bad calls without blowing up", "Keeps emotions in check under provocation", "Leads by example in discipline"],
-       weak:   ["Frequent outbursts or meltdowns", "Argues with officials or coaches", "Lets frustration hurt performance"],
-       develop: ["Identify your #1 trigger — name it, then make a plan for it", "After a bad call, count to 5 before you react", "Ask a trusted teammate to hold you accountable this week"] },
-  G: { key:"G", label:"Gentleness", icon:"🌿", tagline:"Strength under control", color:"#9c4dff", bg:"#f8f0ff", border:"#ff8c00",
-       scoreMeaning: "0=Often harsh • 1=Sometimes gentle • 2=Usually gentle • 3=Strength under control",
-       strong: ["Encourages struggling teammates", "Competes hard without being cruel", "Uses words that build up, not tear down"],
-       weak:   ["Often harsh or cutting with words", "Intimidates or belittles others", "Confuses meanness with toughness"],
-       develop: ["Before criticizing a teammate, ask: 'Is this kind AND true?'", "Find one struggling player this week and intentionally encourage them", "Journal: where did strength AND gentleness show up together today?"] },
-  H: { key:"H", label:"Humility", icon:"🙏", tagline:"Playing from identity, not for identity", color:"#ff8c00", bg:"#fff8f0", border:"#ff8c00",
-       scoreMeaning: "0=Very prideful • 1=Occasional humility • 2=Growing humility • 3=Consistently humble",
-       strong: ["Credits teammates and coaches for success", "Accepts coaching without defensiveness", "Secure enough to celebrate others"],
-       weak:   ["Takes credit, deflects blame", "Gets defensive when corrected", "Needs to be the star"],
-       develop: ["After your next win, publicly credit two specific teammates", "When corrected by a coach, respond: 'Thank you, I'll work on that'", "Ask yourself: 'Am I playing TO prove something or FROM knowing who I am?'"] },
-  Gr: { key:"Gr", label:"Gratitude", icon:"🙌", tagline:"Thankful in all circumstances", color:"#ffaa00", bg:"#fffdf0", border:"#ff8c00",
-       scoreMeaning: "0=Very entitled • 1=Occasional thanks • 2=Usually grateful • 3=Thankful in all circumstances",
-       strong: ["Thanks coaches, officials, and opponents", "Grateful for the opportunity to compete", "Positive attitude win or lose"],
-       weak:   ["Entitled attitude about playing time or roles", "Rarely thanks others", "Complains about conditions, calls, or teammates"],
-       develop: ["Start every practice with one thing you're grateful for about this team", "Write a one-line thank-you to a coach or teammate this week", "After a loss, find three genuine things to be thankful for before you leave"] },
-  J: { key:"J", label:"Joy", icon:"🎉", tagline:"Delight that outlasts the score", color:"#ff6600", bg:"#fff4f0", border:"#ff8c00",
-       scoreMeaning: "0=Joy is gone • 1=Rare joy • 2=Usually joyful • 3=Consistent delight",
-       strong: ["Genuine enjoyment of the game", "Joy that doesn't depend on the scoreboard", "Lifts the energy of those around them"],
-       weak:   ["Only happy when winning", "Drains team energy with negativity", "Has lost the love of the game"],
-       develop: ["Recall why you first fell in love with this sport — write it down", "Find one moment in each practice to just enjoy the game", "Remind yourself: the scoreboard is temporary, but who you're becoming is not"] }
-};
-
-const SCORE_LABELS = ["Missing", "Emerging", "Developing", "Strong"];
-
-// ─── HELPERS ──────────────────────────────────────────────────────────────────
-function getCombo(scores) {
-  const strong = Object.values(scores).filter(v => v === 3).length;
-  const developing = Object.values(scores).filter(v => v >= 2).length;
-  const avg = (Object.values(scores).reduce((a,b) => a + b, 0) / 7).toFixed(1);
-
-  if (strong >= 5) return { label: "Kingdom Competitor", icon: "🏆", desc: `Avg ${avg}/3`, color: C.orange, progress: 95 };
-  if (developing >= 6) return { label: "Strong Disciple", icon: "🌟", desc: `Avg ${avg}/3`, color: C.green, progress: 85 };
-  return { label: "Developing Disciple", icon: "🌱", desc: `Avg ${avg}/3`, color: "#fd7e14", progress: Math.round(developing / 7 * 100) };
-}
-
-function calculateTeamProgress(athletes) {
-  if (athletes.length === 0) return { avgScore: "0.0", strongPercent: 0, totalAthletes: 0 };
-  let totalScore = 0, totalStrong = 0;
-  const totalVirtues = athletes.length * 7;
-
-  athletes.forEach(a => {
-    const scores = Object.values(a.scores || {});
-    totalScore += scores.reduce((a,b) => a + b, 0);
-    totalStrong += scores.filter(v => v === 3).length;
-  });
-
-  const avgScore = (totalScore / totalVirtues).toFixed(1);
-  const strongPercent = Math.round((totalStrong / totalVirtues) * 100);
-
-  return { avgScore, strongPercent, totalAthletes: athletes.length };
-}
-
-// ─── MODALS ───────────────────────────────────────────────────────────────────
-function Modal({title, onClose, children}) {
-  return (
-    <div style={{position:"fixed", inset:0, background:"rgba(0,0,0,0.75)", zIndex:500, display:"flex", alignItems:"center", justifyContent:"center"}} onClick={e=>e.target===e.currentTarget&&onClose()}>
-      <div style={{background:"#fff", borderRadius:16, width:"92%", maxWidth:720, maxHeight:"92vh", overflow:"hidden", boxShadow:"0 25px 70px rgba(0,0,0,0.25)"}}>
-        <div style={{padding:"18px 24px", borderBottom:"1px solid #dee2e6", display:"flex", justifyContent:"space-between", alignItems:"center"}}>
-          <span style={{fontSize:21, fontWeight:800, color:C.orange}}>{title}</span>
-          <button onClick={onClose} style={{fontSize:24, background:"none", border:"none", color:"#666"}}>✕</button>
-        </div>
-        <div style={{padding:24, overflowY:"auto", maxHeight:"78vh"}}>{children}</div>
-      </div>
-    </div>
-  );
-}
-
-function ConfirmDelete({name, onConfirm, onCancel}) {
-  return (
-    <Modal title="Delete Athlete" onClose={onCancel}>
-      <p style={{fontSize:16, marginBottom:24}}>Are you sure you want to permanently delete <strong>{name}</strong>?</p>
-      <p style={{color:"#ef4444", marginBottom:24}}>This cannot be undone.</p>
-      <div style={{display:"flex", gap:12, justifyContent:"flex-end"}}>
-        <button onClick={onCancel} style={{padding:"12px 24px", border:"none", background:"#ddd", borderRadius:10}}>Cancel</button>
-        <button onClick={onConfirm} style={{padding:"12px 28px", border:"none", background:"#ef4444", color:"#fff", borderRadius:10, fontWeight:700}}>Yes, Delete</button>
-      </div>
-    </Modal>
-  );
-}
-
-// ─── EDIT MODAL ───────────────────────────────────────────────────────────────
-function EditModal({person, onSave, onClose}) {
-  const [data, setData] = useState({...person, notes: person.notes || ""});
-
-  const updateScore = (key, value) => setData(prev => ({...prev, scores: {...prev.scores, [key]: Number(value)}}));
-
-  return (
-    <Modal title={data.id ? "Edit Athlete" : "Add New Athlete"} onClose={onClose}>
-      <input placeholder="Athlete Name *" value={data.name||""} onChange={e=>setData({...data,name:e.target.value})} style={{width:"100%", padding:14, fontSize:17, border:`2px solid ${C.border}`, borderRadius:10, marginBottom:12}} />
-      <input placeholder="Role / Team (optional)" value={data.role||""} onChange={e=>setData({...data,role:e.target.value})} style={{width:"100%", padding:14, fontSize:17, border:`2px solid ${C.border}`, borderRadius:10, marginBottom:20}} />
-
-      <div style={{marginBottom:20}}>
-        <div style={{fontWeight:700, color:C.orange, marginBottom:12}}>Score Each Virtue (0–3)</div>
-        {Object.values(VIRTUES).map(t => (
-          <div key={t.key} style={{marginBottom:16, padding:16, background:"#fff", border:`1px solid ${t.border}`, borderRadius:12}}>
-            <div style={{display:"flex", alignItems:"center", gap:12, marginBottom:8}}>
-              <span style={{fontSize:28}}>{t.icon}</span>
-              <div style={{flex:1, fontWeight:700, color:t.color}}>{t.label}</div>
-            </div>
-            <div style={{fontSize:13, color:"#555", marginBottom:10}}>{t.scoreMeaning}</div>
-            <div style={{display:"flex", gap:6}}>
-              {[0,1,2,3].map(n => (
-                <button key={n} onClick={()=>updateScore(t.key,n)} style={{flex:1, padding:"10px", borderRadius:8, background: data.scores[t.key]===n ? C.orange : "#f1f3f5", color: data.scores[t.key]===n ? "#fff" : "#333", fontWeight:700}}>
-                  {n}
-                </button>
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <div style={{marginBottom:20}}>
-        <div style={{fontWeight:700, marginBottom:8}}>Notes / Observations / Prayers</div>
-        <textarea value={data.notes} onChange={e=>setData({...data, notes:e.target.value})} placeholder="Key moments, growth areas, specific prayers..." style={{width:"100%", height:130, padding:14, border:`2px solid ${C.border}`, borderRadius:10, resize:"vertical"}} />
-      </div>
-
-      <div style={{display:"flex", gap:12, justifyContent:"flex-end"}}>
-        <button onClick={onClose} style={{padding:"12px 24px", border:"none", background:"#ddd", borderRadius:10}}>Cancel</button>
-        <button onClick={()=>onSave(data)} style={{padding:"12px 32px", border:"none", background:C.orange, color:"#fff", borderRadius:10, fontWeight:700}} disabled={!data.name?.trim()}>💾 Save Changes</button>
-      </div>
-    </Modal>
-  );
-}
-
-// ─── PERSON DETAIL ────────────────────────────────────────────────────────────
-function PersonDetail({person, onClose, onEdit}) {
-  const [tab, setTab] = useState("assess");
-  const combo = getCombo(person.scores);
-
-  return (
-    <Modal title={person.name} onClose={onClose}>
-      <div style={{display:"flex", justifyContent:"space-between", marginBottom:20}}>
-        <div>
-          <div style={{fontSize:52}}>{combo.icon}</div>
-          <div style={{fontSize:24, fontWeight:800, color:combo.color}}>{combo.label}</div>
-        </div>
-        <button onClick={()=>{ onEdit(person); onClose(); }} style={{background:C.orange, color:"#fff", border:"none", padding:"10px 22px", borderRadius:10, fontWeight:700}}>✏ Edit</button>
-      </div>
-
-      <div style={{marginBottom:24}}>
-        <div style={{display:"flex", justifyContent:"space-between", fontSize:14, marginBottom:8}}>
-          <span>Character Progress</span>
-          <span>{combo.progress}%</span>
-        </div>
-        <div className="progress-bar">
-          <div className="progress-fill" style={{width: `${combo.progress}%`, background: combo.progress > 80 ? "linear-gradient(90deg,#00b36b,#34d399)" : combo.progress > 50 ? "linear-gradient(90deg,#ff8c00,#ffaa00)" : "#dc3545"}} />
-        </div>
-        <div style={{fontSize:13, color:C.textMuted, marginTop:6}}>
-          Last updated: {person.lastUpdated ? new Date(person.lastUpdated).toLocaleDateString() : "Never"}
-        </div>
-      </div>
-
-      <div style={{display:"flex", borderBottom:"3px solid #ff8c00", marginBottom:20}}>
-        {["assess","develop","notes"].map(t => (
-          <button key={t} onClick={()=>setTab(t)} style={{flex:1, padding:"14px", fontWeight:700, background:tab===t?C.orange:"#f1f3f5", color:tab===t?"#fff":"#333", border:"none"}}>
-            {t==="assess"?"📊 Profile":t==="develop"?"🛠 Develop":"📝 Notes"}
-          </button>
-        ))}
-      </div>
-
-      {tab==="assess" && Object.entries(person.scores).map(([k,v]) => {
-        const t = VIRTUES[k];
-        const showHas = v >= 2;
-        return (
-          <div key={k} style={{marginBottom:20, background:"#fff", border:`2px solid ${t.border}`, borderRadius:14, overflow:"hidden"}}>
-            <div style={{background:t.bg, padding:"16px 20px", display:"flex", alignItems:"center", gap:16}}>
-              <span style={{fontSize:42}}>{t.icon}</span>
-              <div style={{flex:1}}><div style={{fontSize:21, fontWeight:800, color:t.color}}>{t.label}</div></div>
-              <span style={{fontSize:18, fontWeight:700}}>{v}/3</span>
-            </div>
-            <div style={{padding:"20px"}}>
-              {(showHas ? t.strong : t.weak).map((s,i) => (
-                <div key={i} style={{marginBottom:6}}>{showHas?"→":"–"} {s}</div>
-              ))}
-            </div>
-          </div>
-        );
-      })}
-
-      {tab==="develop" && (
-        <div>
-          {Object.entries(person.scores).map(([k,v]) => {
-            const t = VIRTUES[k];
-            return (
-              <div key={k} style={{marginBottom:20, background:"#fff", border:`2px solid ${t.border}`, borderRadius:14, overflow:"hidden"}}>
-                <div style={{background:t.bg, padding:"14px 20px", display:"flex", alignItems:"center", gap:12}}>
-                  <span style={{fontSize:28}}>{t.icon}</span>
-                  <div style={{fontSize:18, fontWeight:800, color:t.color, flex:1}}>{t.label}</div>
-                  <span style={{fontSize:14, color:C.textMuted, background:"#fff", padding:"4px 10px", borderRadius:20, fontWeight:700}}>{SCORE_LABELS[v]}</span>
-                </div>
-                <div style={{padding:"16px 20px"}}>
-                  {t.develop.map((step,i) => (
-                    <div key={i} style={{display:"flex", gap:12, marginBottom:10, alignItems:"flex-start"}}>
-                      <span style={{background:C.orange, color:"#fff", borderRadius:"50%", width:22, height:22, display:"flex", alignItems:"center", justifyContent:"center", fontSize:12, fontWeight:800, flexShrink:0}}>{i+1}</span>
-                      <span style={{fontSize:14, color:C.text, lineHeight:1.5}}>{step}</span>
+    <!-- Main Container -->
+    <div class="min-h-screen flex flex-col">
+        <!-- Header -->
+        <header class="border-b border-gray-200 dark:border-slate-800 bg-gradient-to-r from-white to-gray-50 dark:from-slate-900 dark:to-slate-800">
+            <div class="w-full px-4 sm:px-6 py-6">
+                <div class="flex items-center justify-between gap-4">
+                    <div class="min-w-0 flex-1">
+                        <h1 class="text-2xl sm:text-3xl font-serif font-bold bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent">
+                            Huberman Optimizer
+                        </h1>
+                        <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mt-1">Daily optimization</p>
                     </div>
-                  ))}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
-
-      {tab==="notes" && (
-        <div style={{background:"#fff", border:`1px solid ${C.border}`, borderRadius:12, padding:24, minHeight:200, whiteSpace:"pre-wrap", fontSize:15}}>
-          {person.notes || "No notes added yet."}
-        </div>
-      )}
-    </Modal>
-  );
-}
-
-const BLANK_ATHLETE = { id:"", name:"", role:"", notes:"", scores:{L:1,P:1,S:1,G:1,H:1,Gr:1,J:1}, lastUpdated: null };
-
-// ─── MAIN APP ─────────────────────────────────────────────────────────────────
-function App() {
-  const [tab, setTab] = useState("athletes");
-  const [athletes, setAthletes] = useState(() => load("awaygame_athletes_v1", []));
-  const [editing, setEditing] = useState(null);
-  const [viewing, setViewing] = useState(null);
-  const [deleteConfirm, setDeleteConfirm] = useState(null);
-
-  function saveAthlete(p) {
-    const updated = {...p, id: p.id || uid(), lastUpdated: Date.now()};
-    const next = p.id ? athletes.map(x => x.id === p.id ? updated : x) : [...athletes, updated];
-    setAthletes(next);
-    save("awaygame_athletes_v1", next);
-    setEditing(null);
-  }
-
-  function deleteAthlete(id) {
-    const next = athletes.filter(a => a.id !== id);
-    setAthletes(next);
-    save("awaygame_athletes_v1", next);
-    setDeleteConfirm(null);
-    if (viewing && viewing.id === id) setViewing(null);
-  }
-
-  const teamStats = calculateTeamProgress(athletes);
-
-  return (
-    <div style={{minHeight:"100vh", background:"#f8f9fa"}}>
-      {/* HEADER */}
-      <div style={{background:"#fff", borderBottom:"4px solid #ff8c00", padding:"0 24px", height:76, display:"flex", alignItems:"center", justifyContent:"space-between", boxShadow:"0 3px 12px rgba(0,0,0,0.1)"}}>
-        <div>
-          <div style={{fontFamily:"'Barlow Condensed',sans-serif", fontWeight:900, fontSize:32, letterSpacing:1.5, color:C.orange}}>AWAY GAME</div>
-          <div style={{fontSize:13, color:"#555"}}>Christian Parent’s Playbook</div>
-        </div>
-        <div style={{display:"flex", gap:8}}>
-          <button onClick={()=>setTab("athletes")} style={{padding:"10px 22px", borderRadius:10, background:tab==="athletes"?C.orange:"#fff", color:tab==="athletes"?"#fff":"#333", fontWeight:700, border:"2px solid #ff8c00"}}>👥 My Athletes</button>
-          <button onClick={()=>setTab("playbook")} style={{padding:"10px 22px", borderRadius:10, background:tab==="playbook"?C.orange:"#fff", color:tab==="playbook"?"#fff":"#333", fontWeight:700, border:"2px solid #ff8c00"}}>📖 The Playbook</button>
-        </div>
-      </div>
-
-      {tab === "athletes" && (
-        <div style={{padding:24}}>
-          {/* TEAM PROGRESS DASHBOARD */}
-          {athletes.length > 0 && (
-            <div className="team-card" style={{marginBottom:32}}>
-              <div style={{fontSize:20, fontWeight:800, marginBottom:16, color:C.orange}}>Team Progress Overview</div>
-              <div style={{display:"grid", gridTemplateColumns:"repeat(auto-fit, minmax(180px, 1fr))", gap:20}}>
-                <div>
-                  <div style={{fontSize:13, color:C.textMuted}}>Team Average Score</div>
-                  <div style={{fontSize:32, fontWeight:800, color:C.orange}}>{teamStats.avgScore}</div>
-                  <div style={{fontSize:13}}>out of 3.0</div>
-                </div>
-                <div>
-                  <div style={{fontSize:13, color:C.textMuted}}>Strong Virtues</div>
-                  <div style={{fontSize:32, fontWeight:800, color: teamStats.strongPercent > 70 ? C.green : C.orange}}>{teamStats.strongPercent}%</div>
-                </div>
-                <div>
-                  <div style={{fontSize:13, color:C.textMuted}}>Athletes Tracked</div>
-                  <div style={{fontSize:32, fontWeight:800}}>{teamStats.totalAthletes}</div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          <div style={{display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:28}}>
-            <h1 style={{fontSize:28, fontWeight:800}}>My Athletes</h1>
-            <button onClick={()=>setEditing(BLANK_ATHLETE)} style={{background:C.orange, color:"#fff", border:"none", padding:"12px 28px", borderRadius:12, fontWeight:700}}>＋ Add Athlete</button>
-          </div>
-
-          {athletes.length === 0 ? (
-            <div style={{textAlign:"center", padding:"120px 20px", color:"#666"}}>
-              <div style={{fontSize:80}}>⚽️🏀🏈</div>
-              <div style={{fontSize:24, margin:"20px 0"}}>Start building your team’s character</div>
-              <button onClick={()=>setEditing(BLANK_ATHLETE)} style={{background:C.orange, color:"#fff", padding:"14px 36px", borderRadius:12, fontSize:17, fontWeight:700}}>Add Your First Athlete</button>
-            </div>
-          ) : (
-            <div style={{display:"grid", gridTemplateColumns:"repeat(auto-fill, minmax(310px, 1fr))", gap:20}}>
-              {athletes.map(p => {
-                const combo = getCombo(p.scores);
-                return (
-                  <div key={p.id} style={{background:"#fff", border:`1px solid ${C.border}`, borderRadius:16, padding:22, boxShadow:"0 6px 20px rgba(0,0,0,0.07)", position:"relative"}}>
-                    <button 
-                      onClick={(e)=>{e.stopPropagation(); setDeleteConfirm(p);}} 
-                      className="delete-btn" 
-                      style={{position:"absolute", top:12, right:12}}
-                    >
-                      🗑
+                    <button id="themeToggle" class="p-2 rounded-lg bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 transition flex-shrink-0">
+                        <span class="text-xl" id="themeIcon">🌙</span>
                     </button>
-                    
-                    <div onClick={()=>setViewing(p)} style={{cursor:"pointer"}}>
-                      <div style={{fontSize:22, fontWeight:800, marginBottom:8}}>{p.name}</div>
-                      {p.role && <div style={{color:C.textSub, marginBottom:12}}>{p.role}</div>}
-                      
-                      <div style={{display:"flex", gap:8, flexWrap:"wrap", marginBottom:16}}>
-                        {Object.entries(p.scores).map(([k,v]) => (
-                          <div key={k} style={{background:VIRTUES[k].bg, padding:"6px 10px", borderRadius:8, fontSize:14}}>{VIRTUES[k].icon} {v}</div>
-                        ))}
-                      </div>
-
-                      <div style={{marginBottom:12}}>
-                        <div className="progress-bar">
-                          <div className="progress-fill" style={{width: `${combo.progress}%`, background: combo.progress > 80 ? "linear-gradient(90deg,#00b36b,#34d399)" : combo.progress > 50 ? "linear-gradient(90deg,#ff8c00,#ffaa00)" : "#dc3545"}} />
-                        </div>
-                      </div>
-
-                      <div style={{fontSize:13, color:C.textMuted}}>Last updated: {p.lastUpdated ? new Date(p.lastUpdated).toLocaleDateString() : "Never"}</div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
-      )}
-
-      {tab === "playbook" && (
-        <div style={{padding:24, maxWidth:820, margin:"0 auto"}}>
-          <h2 style={{color:C.orange, marginBottom:8}}>The Seven Virtues</h2>
-          <p style={{color:C.textSub, marginBottom:32}}>Fruit of the Spirit applied to youth sports.</p>
-          {Object.values(VIRTUES).map(t => (
-            <div key={t.key} style={{marginBottom:24, background:"#fff", border:`1px solid ${t.border}`, borderRadius:16, padding:24}}>
-              <div style={{display:"flex", alignItems:"center", gap:16}}>
-                <span style={{fontSize:48}}>{t.icon}</span>
-                <div>
-                  <div style={{fontSize:22, fontWeight:800, color:t.color}}>{t.label}</div>
-                  <div style={{color:C.textSub}}>"{t.tagline}"</div>
                 </div>
-              </div>
+
+                <!-- Summary Bar -->
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-4 mt-6">
+                    <div class="bg-white dark:bg-slate-800 rounded-lg p-3 sm:p-4 border border-gray-200 dark:border-slate-700">
+                        <p class="text-xs font-medium text-gray-600 dark:text-gray-400">TODAY</p>
+                        <p class="text-xl sm:text-2xl font-bold text-blue-600 dark:text-blue-400 mt-1" id="completionPercent">0%</p>
+                    </div>
+                    <div class="bg-white dark:bg-slate-800 rounded-lg p-3 sm:p-4 border border-gray-200 dark:border-slate-700">
+                        <p class="text-xs font-medium text-gray-600 dark:text-gray-400">STREAK</p>
+                        <p class="text-xl sm:text-2xl font-bold text-amber-600 dark:text-amber-400 mt-1" id="streakCount">0</p>
+                    </div>
+                    <div class="bg-white dark:bg-slate-800 rounded-lg p-3 sm:p-4 border border-gray-200 dark:border-slate-700">
+                        <p class="text-xs font-medium text-gray-600 dark:text-gray-400">WEEK</p>
+                        <p class="text-xl sm:text-2xl font-bold text-green-600 dark:text-green-400 mt-1" id="weekTotal">0</p>
+                    </div>
+                    <div class="hidden sm:block bg-white dark:bg-slate-800 rounded-lg p-3 sm:p-4 border border-gray-200 dark:border-slate-700">
+                        <p class="text-xs font-medium text-gray-600 dark:text-gray-400">QUOTE</p>
+                        <p class="text-xs italic text-gray-700 dark:text-gray-300 mt-2 leading-tight" id="dailyQuote">Loading...</p>
+                    </div>
+                </div>
             </div>
-          ))}
+        </header>
+
+        <!-- Main Content Area -->
+        <div class="flex-1 w-full mx-auto">
+            <div class="flex flex-col lg:grid lg:grid-cols-4 lg:gap-6 h-full">
+                
+                <!-- Sidebar Navigation -->
+                <aside class="lg:col-span-1 border-b lg:border-b-0 lg:border-r border-gray-200 dark:border-slate-800 order-first lg:order-none">
+                    <nav class="flex lg:flex-col gap-0 overflow-x-auto lg:overflow-x-visible">
+                        <button class="tab-btn flex-shrink-0 lg:flex-shrink flex-1 lg:flex-none p-3 lg:p-4 text-left hover:bg-gray-100 dark:hover:bg-slate-800 transition font-medium text-blue-600 dark:text-blue-400 border-b-2 lg:border-b-0 lg:border-r-2 border-blue-600 dark:border-blue-400" data-tab="morning">
+                            <span class="hidden sm:inline">🌅 Morning</span>
+                            <span class="sm:hidden">🌅</span>
+                        </button>
+                        <button class="tab-btn flex-shrink-0 lg:flex-shrink flex-1 lg:flex-none p-3 lg:p-4 text-left hover:bg-gray-100 dark:hover:bg-slate-800 transition font-medium border-b-2 lg:border-b-0 lg:border-r-2 border-transparent" data-tab="midday">
+                            <span class="hidden sm:inline">☀️ Midday</span>
+                            <span class="sm:hidden">☀️</span>
+                        </button>
+                        <button class="tab-btn flex-shrink-0 lg:flex-shrink flex-1 lg:flex-none p-3 lg:p-4 text-left hover:bg-gray-100 dark:hover:bg-slate-800 transition font-medium border-b-2 lg:border-b-0 lg:border-r-2 border-transparent" data-tab="evening">
+                            <span class="hidden sm:inline">🌆 Evening</span>
+                            <span class="sm:hidden">🌆</span>
+                        </button>
+                        <button class="tab-btn flex-shrink-0 lg:flex-shrink flex-1 lg:flex-none p-3 lg:p-4 text-left hover:bg-gray-100 dark:hover:bg-slate-800 transition font-medium border-b-2 lg:border-b-0 lg:border-r-2 border-transparent" data-tab="weekly">
+                            <span class="hidden sm:inline">📊 Weekly</span>
+                            <span class="sm:hidden">📊</span>
+                        </button>
+                        <button class="tab-btn flex-shrink-0 lg:flex-shrink flex-1 lg:flex-none p-3 lg:p-4 text-left hover:bg-gray-100 dark:hover:bg-slate-800 transition font-medium border-b-2 lg:border-b-0 lg:border-r-2 border-transparent" data-tab="progress">
+                            <span class="hidden sm:inline">📈 Progress</span>
+                            <span class="sm:hidden">📈</span>
+                        </button>
+                    </nav>
+                </aside>
+
+                <!-- Content Area -->
+                <div class="lg:col-span-3 p-4 sm:p-6 lg:p-8 overflow-y-auto">
+                    
+                    <!-- Morning Tab -->
+                    <div id="morning" class="tab-content">
+                        <h2 class="text-2xl font-serif font-bold mb-1">Morning Optimization</h2>
+                        <p class="text-gray-600 dark:text-gray-400 mb-6">Set your baseline. The first 2 hours determine your entire day.</p>
+
+                        <div class="space-y-3">
+                            <!-- Hydration -->
+                            <div class="habit-row bg-white dark:bg-slate-800 rounded-lg p-4 border border-gray-200 dark:border-slate-700">
+                                <div class="flex items-start gap-3">
+                                    <input type="checkbox" class="habit-check mt-1" data-habit-id="morning-hydration" data-category="morning">
+                                    <div class="flex-1 min-w-0">
+                                        <p class="font-medium flex items-center gap-2">
+                                            <span class="check-icon">💧</span>
+                                            <span>Hydration with electrolytes</span>
+                                        </p>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">500ml water + electrolyte source (salt, coconut water, or electrolyte mix)</p>
+                                    </div>
+                                </div>
+                                <div class="hidden expanded-content mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded border border-blue-200 dark:border-blue-800">
+                                    <p class="text-sm leading-relaxed"><strong>Why This Matters:</strong> Overnight, you lose 0.5–1L of fluid. Rehydrating immediately with electrolytes restores osmolarity, improves cognitive function, and primes your vascular system. Electrolytes (sodium, potassium, magnesium) enhance water absorption by 20–30% vs plain water alone.</p>
+                                </div>
+                            </div>
+
+                            <!-- Sunlight -->
+                            <div class="habit-row bg-white dark:bg-slate-800 rounded-lg p-4 border border-gray-200 dark:border-slate-700">
+                                <div class="flex items-start gap-3">
+                                    <input type="checkbox" class="habit-check mt-1" data-habit-id="morning-sunlight" data-category="morning">
+                                    <div class="flex-1 min-w-0">
+                                        <p class="font-medium flex items-center gap-2">
+                                            <span class="check-icon">☀️</span>
+                                            <span>Direct sunlight exposure</span>
+                                        </p>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">5–20 minutes (no sunglasses)</p>
+                                    </div>
+                                </div>
+                                <div class="hidden expanded-content mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded border border-blue-200 dark:border-blue-800">
+                                    <p class="text-sm leading-relaxed"><strong>Why This Matters:</strong> Morning sunlight sets your circadian rhythm, increases cortisol appropriately, suppresses melatonin, and boosts dopamine. This is the single most powerful anchor for sleep quality, mood, and immune function. Intensity matters: ideally 100,000+ lux (outdoors beats windows).</p>
+                                    <div class="mt-3 pt-3 border-t border-blue-200 dark:border-blue-700">
+                                        <button class="text-sm text-blue-600 dark:text-blue-400 font-medium hover:underline" onclick="startSunlightTimer()">Start 10-min timer →</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Caffeine Delay -->
+                            <div class="habit-row bg-white dark:bg-slate-800 rounded-lg p-4 border border-gray-200 dark:border-slate-700">
+                                <div class="flex items-start gap-3">
+                                    <input type="checkbox" class="habit-check mt-1" data-habit-id="morning-caffeine-delay" data-category="morning">
+                                    <div class="flex-1 min-w-0">
+                                        <p class="font-medium flex items-center gap-2">
+                                            <span class="check-icon">⏱️</span>
+                                            <span>Delay caffeine 90–120 min</span>
+                                        </p>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Post-wake time before first coffee</p>
+                                    </div>
+                                </div>
+                                <div class="hidden expanded-content mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded border border-blue-200 dark:border-blue-800">
+                                    <p class="text-sm leading-relaxed"><strong>Why This Matters:</strong> Adenosine naturally rises post-wake. Delaying caffeine lets adenosine build naturally, making caffeine more effective when you do consume it. Early caffeine disrupts adenosine signaling, leading to afternoon crashes and sleep disruption.</p>
+                                </div>
+                            </div>
+
+                            <!-- Light Movement -->
+                            <div class="habit-row bg-white dark:bg-slate-800 rounded-lg p-4 border border-gray-200 dark:border-slate-700">
+                                <div class="flex items-start gap-3">
+                                    <input type="checkbox" class="habit-check mt-1" data-habit-id="morning-movement" data-category="morning">
+                                    <div class="flex-1 min-w-0">
+                                        <p class="font-medium flex items-center gap-2">
+                                            <span class="check-icon">🚶</span>
+                                            <span>Light movement or stretching</span>
+                                        </p>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">5–10 minutes</p>
+                                    </div>
+                                </div>
+                                <div class="hidden expanded-content mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded border border-blue-200 dark:border-blue-800">
+                                    <p class="text-sm leading-relaxed"><strong>Why This Matters:</strong> Light movement increases body temperature, activates the nervous system, and enhances alertness. It doesn't need to be intense—walking, yoga, or mobility work suffices.</p>
+                                </div>
+                            </div>
+
+                            <!-- Wim Hof Breathing -->
+                            <div class="habit-row bg-white dark:bg-slate-800 rounded-lg p-4 border border-gray-200 dark:border-slate-700">
+                                <div class="flex items-start gap-3">
+                                    <input type="checkbox" class="habit-check mt-1" data-habit-id="morning-wim-hof" data-category="morning">
+                                    <div class="flex-1 min-w-0">
+                                        <p class="font-medium flex items-center gap-2">
+                                            <span class="check-icon">💨</span>
+                                            <span>Wim Hof Breathing (optional)</span>
+                                        </p>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">3–5 minute guided session</p>
+                                    </div>
+                                </div>
+                                <div class="hidden expanded-content mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded border border-blue-200 dark:border-blue-800">
+                                    <p class="text-sm leading-relaxed"><strong>Why This Matters:</strong> Controlled hyperventilation + breath holds may increase alertness, stress resilience, and autonomic control. <span class="text-red-600 dark:text-red-400 font-medium">Safety note: Perform seated or lying down, never in water or while driving.</span></p>
+                                    <div class="mt-3 pt-3 border-t border-blue-200 dark:border-blue-700">
+                                        <button class="text-sm text-blue-600 dark:text-blue-400 font-medium hover:underline" onclick="openWimHofBreathing()">Open guided breathing →</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Midday Tab -->
+                    <div id="midday" class="tab-content hidden">
+                        <h2 class="text-2xl font-serif font-bold mb-1">Midday Optimization</h2>
+                        <p class="text-gray-600 dark:text-gray-400 mb-6">Maintain momentum. Protect focus and metabolic health.</p>
+
+                        <div class="space-y-3">
+                            <!-- Hydration Tracking -->
+                            <div class="habit-row bg-white dark:bg-slate-800 rounded-lg p-4 border border-gray-200 dark:border-slate-700">
+                                <div class="flex items-start gap-3">
+                                    <input type="checkbox" class="habit-check mt-1" data-habit-id="midday-hydration" data-category="midday">
+                                    <div class="flex-1 min-w-0">
+                                        <p class="font-medium flex items-center gap-2">
+                                            <span class="check-icon">💧</span>
+                                            <span>Hydration check-in</span>
+                                        </p>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Drink to target + log intake</p>
+                                    </div>
+                                </div>
+                                <div class="hidden expanded-content mt-4 p-3 bg-green-50 dark:bg-green-900/20 rounded border border-green-200 dark:border-green-800">
+                                    <p class="text-sm leading-relaxed"><strong>Why This Matters:</strong> Midday dehydration tanks cognitive performance. Most people under-drink by 15–30% daily. A quick check-in re-anchors the habit and prevents afternoon mental fatigue.</p>
+                                    <div class="mt-3 pt-3 border-t border-green-200 dark:border-green-700">
+                                        <button class="text-sm text-green-600 dark:text-green-400 font-medium hover:underline" onclick="openHydrationCalc()">Hydration calculator →</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Zone 2 Cardio -->
+                            <div class="habit-row bg-white dark:bg-slate-800 rounded-lg p-4 border border-gray-200 dark:border-slate-700">
+                                <div class="flex items-start gap-3">
+                                    <input type="checkbox" class="habit-check mt-1" data-habit-id="midday-zone2" data-category="midday">
+                                    <div class="flex-1 min-w-0">
+                                        <p class="font-medium flex items-center gap-2">
+                                            <span class="check-icon">🏃</span>
+                                            <span>Zone 2 cardio</span>
+                                        </p>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Minutes accumulated this week</p>
+                                    </div>
+                                </div>
+                                <div class="hidden expanded-content mt-4 p-3 bg-green-50 dark:bg-green-900/20 rounded border border-green-200 dark:border-green-800">
+                                    <p class="text-sm leading-relaxed"><strong>Why This Matters:</strong> Zone 2 (60–70% max HR) builds aerobic capacity, increases mitochondrial density, and enhances fat oxidation without the stress of high-intensity work. Target 150–180 min/week for optimal health.</p>
+                                </div>
+                            </div>
+
+                            <!-- Resistance Training -->
+                            <div class="habit-row bg-white dark:bg-slate-800 rounded-lg p-4 border border-gray-200 dark:border-slate-700">
+                                <div class="flex items-start gap-3">
+                                    <input type="checkbox" class="habit-check mt-1" data-habit-id="midday-resistance" data-category="midday">
+                                    <div class="flex-1 min-w-0">
+                                        <p class="font-medium flex items-center gap-2">
+                                            <span class="check-icon">💪</span>
+                                            <span>Resistance training</span>
+                                        </p>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Strength session completed</p>
+                                    </div>
+                                </div>
+                                <div class="hidden expanded-content mt-4 p-3 bg-green-50 dark:bg-green-900/20 rounded border border-green-200 dark:border-green-800">
+                                    <p class="text-sm leading-relaxed"><strong>Why This Matters:</strong> Resistance training increases muscle mass, bone density, and metabolic rate. It also enhances cognitive function via BDNF (brain-derived neurotrophic factor) and improves sleep architecture.</p>
+                                </div>
+                            </div>
+
+                            <!-- NSDR -->
+                            <div class="habit-row bg-white dark:bg-slate-800 rounded-lg p-4 border border-gray-200 dark:border-slate-700">
+                                <div class="flex items-start gap-3">
+                                    <input type="checkbox" class="habit-check mt-1" data-habit-id="midday-nsdr" data-category="midday">
+                                    <div class="flex-1 min-w-0">
+                                        <p class="font-medium flex items-center gap-2">
+                                            <span class="check-icon">🧘</span>
+                                            <span>NSDR / Yoga Nidra</span>
+                                        </p>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">10–20 minute session</p>
+                                    </div>
+                                </div>
+                                <div class="hidden expanded-content mt-4 p-3 bg-green-50 dark:bg-green-900/20 rounded border border-green-200 dark:border-green-800">
+                                    <p class="text-sm leading-relaxed"><strong>Why This Matters:</strong> NSDR (Non-Sleep Deep Rest) activates the parasympathetic nervous system, clears mental fatigue, and restores dopamine. Even 10 minutes can reset afternoon focus and mood.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Evening Tab -->
+                    <div id="evening" class="tab-content hidden">
+                        <h2 class="text-2xl font-serif font-bold mb-1">Evening Optimization</h2>
+                        <p class="text-gray-600 dark:text-gray-400 mb-6">Wind down intentionally. Sleep quality determines recovery.</p>
+
+                        <div class="space-y-3">
+                            <!-- Light Dimming -->
+                            <div class="habit-row bg-white dark:bg-slate-800 rounded-lg p-4 border border-gray-200 dark:border-slate-700">
+                                <div class="flex items-start gap-3">
+                                    <input type="checkbox" class="habit-check mt-1" data-habit-id="evening-light-dim" data-category="evening">
+                                    <div class="flex-1 min-w-0">
+                                        <p class="font-medium flex items-center gap-2">
+                                            <span class="check-icon">💡</span>
+                                            <span>Dim ambient lights</span>
+                                        </p>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">2–3 hours before bed</p>
+                                    </div>
+                                </div>
+                                <div class="hidden expanded-content mt-4 p-3 bg-purple-50 dark:bg-purple-900/20 rounded border border-purple-200 dark:border-purple-800">
+                                    <p class="text-sm leading-relaxed"><strong>Why This Matters:</strong> Bright light suppresses melatonin. Dimming ambient light 2–3 hours before bed signals your brain to begin sleep preparation. Aim for <200 lux in evening rooms.</p>
+                                </div>
+                            </div>
+
+                            <!-- Screen Management -->
+                            <div class="habit-row bg-white dark:bg-slate-800 rounded-lg p-4 border border-gray-200 dark:border-slate-700">
+                                <div class="flex items-start gap-3">
+                                    <input type="checkbox" class="habit-check mt-1" data-habit-id="evening-screen" data-category="evening">
+                                    <div class="flex-1 min-w-0">
+                                        <p class="font-medium flex items-center gap-2">
+                                            <span class="check-icon">📱</span>
+                                            <span>Screen blue-light reduction</span>
+                                        </p>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Night Shift / f.lux enabled or devices away</p>
+                                    </div>
+                                </div>
+                                <div class="hidden expanded-content mt-4 p-3 bg-purple-50 dark:bg-purple-900/20 rounded border border-purple-200 dark:border-purple-800">
+                                    <p class="text-sm leading-relaxed"><strong>Why This Matters:</strong> Blue light (400–490 nm) powerfully suppresses melatonin. Enabling blue-light filters on devices or avoiding them entirely 1–2 hours before bed improves sleep onset latency by 15–30 min on average.</p>
+                                </div>
+                            </div>
+
+                            <!-- Sleep Routine -->
+                            <div class="habit-row bg-white dark:bg-slate-800 rounded-lg p-4 border border-gray-200 dark:border-slate-700">
+                                <div class="flex items-start gap-3">
+                                    <input type="checkbox" class="habit-check mt-1" data-habit-id="evening-routine" data-category="evening">
+                                    <div class="flex-1 min-w-0">
+                                        <p class="font-medium flex items-center gap-2">
+                                            <span class="check-icon">😴</span>
+                                            <span>Sleep routine consistency</span>
+                                        </p>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Same bed/wake time ±30 min</p>
+                                    </div>
+                                </div>
+                                <div class="hidden expanded-content mt-4 p-3 bg-purple-50 dark:bg-purple-900/20 rounded border border-purple-200 dark:border-purple-800">
+                                    <p class="text-sm leading-relaxed"><strong>Why This Matters:</strong> Circadian consistency is non-negotiable for sleep quality. Even small variations disrupt melatonin and cortisol timing. Consistency > duration.</p>
+                                </div>
+                            </div>
+
+                            <!-- Nutrition Timing -->
+                            <div class="habit-row bg-white dark:bg-slate-800 rounded-lg p-4 border border-gray-200 dark:border-slate-700">
+                                <div class="flex items-start gap-3">
+                                    <input type="checkbox" class="habit-check mt-1" data-habit-id="evening-nutrition" data-category="evening">
+                                    <div class="flex-1 min-w-0">
+                                        <p class="font-medium flex items-center gap-2">
+                                            <span class="check-icon">🍽️</span>
+                                            <span>Nutrition timing</span>
+                                        </p>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Last meal 3 hours before bed</p>
+                                    </div>
+                                </div>
+                                <div class="hidden expanded-content mt-4 p-3 bg-purple-50 dark:bg-purple-900/20 rounded border border-purple-200 dark:border-purple-800">
+                                    <p class="text-sm leading-relaxed"><strong>Why This Matters:</strong> Eating within 3 hours of sleep triggers digestion and body temperature rise, interfering with sleep onset and quality. Late meals also dysregulate glucose and impact next-day cortisol.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Weekly Tab -->
+                    <div id="weekly" class="tab-content hidden">
+                        <h2 class="text-2xl font-serif font-bold mb-1">Weekly Aggregates</h2>
+                        <p class="text-gray-600 dark:text-gray-400 mb-6">Track cumulative progress for activities that compound weekly.</p>
+
+                        <div class="space-y-4">
+                            <!-- Zone 2 Weekly -->
+                            <div class="bg-white dark:bg-slate-800 rounded-lg p-6 border border-gray-200 dark:border-slate-700">
+                                <div class="flex items-start justify-between mb-4">
+                                    <div>
+                                        <h3 class="font-semibold text-lg flex items-center gap-2">
+                                            <span>🏃</span> Zone 2 Cardio Weekly
+                                        </h3>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Optimal target: 150–180 min/week</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-3xl font-bold text-green-600 dark:text-green-400" id="zone2Total">0</p>
+                                        <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">minutes this week</p>
+                                    </div>
+                                </div>
+                                <div class="space-y-2">
+                                    <label class="block text-sm text-gray-700 dark:text-gray-300">
+                                        <span class="font-medium">Add minutes</span>
+                                        <input type="number" id="zone2Input" class="w-full mt-1 px-3 py-2 border border-gray-300 dark:border-slate-600 rounded bg-gray-50 dark:bg-slate-700" placeholder="0" min="0">
+                                    </label>
+                                    <button onclick="addZone2()" class="w-full bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-600 text-white font-medium py-2 rounded transition">
+                                        Log Minutes
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Strength Volume -->
+                            <div class="bg-white dark:bg-slate-800 rounded-lg p-6 border border-gray-200 dark:border-slate-700">
+                                <div class="flex items-start justify-between mb-4">
+                                    <div>
+                                        <h3 class="font-semibold text-lg flex items-center gap-2">
+                                            <span>💪</span> Strength Volume Weekly
+                                        </h3>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Track total reps × weight (volume)</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-3xl font-bold text-blue-600 dark:text-blue-400" id="strengthTotal">0</p>
+                                        <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">volume units this week</p>
+                                    </div>
+                                </div>
+                                <div class="space-y-2">
+                                    <label class="block text-sm text-gray-700 dark:text-gray-300">
+                                        <span class="font-medium">Add volume (e.g., 10 reps × 100 kg = 1000)</span>
+                                        <input type="number" id="strengthInput" class="w-full mt-1 px-3 py-2 border border-gray-300 dark:border-slate-600 rounded bg-gray-50 dark:bg-slate-700" placeholder="0" min="0">
+                                    </label>
+                                    <button onclick="addStrength()" class="w-full bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 text-white font-medium py-2 rounded transition">
+                                        Log Volume
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Weekly Notes -->
+                            <div class="bg-white dark:bg-slate-800 rounded-lg p-6 border border-gray-200 dark:border-slate-700">
+                                <h3 class="font-semibold text-lg mb-3">Weekly Reflection</h3>
+                                <textarea id="weeklyNotes" class="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded bg-gray-50 dark:bg-slate-700 text-sm" rows="4" placeholder="How did this week go? What worked? What needs adjustment?"></textarea>
+                                <button onclick="saveWeeklyNotes()" class="mt-2 bg-gray-600 hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 text-white font-medium py-2 px-4 rounded transition">
+                                    Save Notes
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Progress Tab -->
+                    <div id="progress" class="tab-content hidden">
+                        <h2 class="text-2xl font-serif font-bold mb-1">Progress Dashboard</h2>
+                        <p class="text-gray-600 dark:text-gray-400 mb-6">Visualize your consistency and compound growth.</p>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                            <!-- Monthly Completions -->
+                            <div class="bg-white dark:bg-slate-800 rounded-lg p-6 border border-gray-200 dark:border-slate-700">
+                                <h3 class="font-semibold text-lg mb-4">Total Completions This Month</h3>
+                                <p class="text-4xl font-bold text-blue-600 dark:text-blue-400" id="monthlyCompletions">0</p>
+                                <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">habits completed since the 1st</p>
+                            </div>
+
+                            <!-- Best Day -->
+                            <div class="bg-white dark:bg-slate-800 rounded-lg p-6 border border-gray-200 dark:border-slate-700">
+                                <h3 class="font-semibold text-lg mb-4">Best Day (Habits Completed)</h3>
+                                <p class="text-4xl font-bold text-amber-600 dark:text-amber-400" id="bestDay">0</p>
+                                <p class="text-sm text-gray-600 dark:text-gray-400 mt-2" id="bestDayDate">No data yet</p>
+                            </div>
+
+                            <!-- Completion Rate by Category -->
+                            <div class="sm:col-span-2 bg-white dark:bg-slate-800 rounded-lg p-6 border border-gray-200 dark:border-slate-700">
+                                <h3 class="font-semibold text-lg mb-6">Completion Rate by Category (This Week)</h3>
+                                <div class="space-y-4">
+                                    <div>
+                                        <div class="flex justify-between mb-2">
+                                            <span class="text-sm font-medium">Morning</span>
+                                            <span class="text-sm font-medium" id="morningRate">0%</span>
+                                        </div>
+                                        <div class="w-full bg-gray-200 dark:bg-slate-700 rounded-full h-2">
+                                            <div class="progress-bar bg-yellow-500 h-2 rounded-full w-0" id="morningBar"></div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="flex justify-between mb-2">
+                                            <span class="text-sm font-medium">Midday</span>
+                                            <span class="text-sm font-medium" id="middayRate">0%</span>
+                                        </div>
+                                        <div class="w-full bg-gray-200 dark:bg-slate-700 rounded-full h-2">
+                                            <div class="progress-bar bg-green-500 h-2 rounded-full w-0" id="middayBar"></div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="flex justify-between mb-2">
+                                            <span class="text-sm font-medium">Evening</span>
+                                            <span class="text-sm font-medium" id="eveningRate">0%</span>
+                                        </div>
+                                        <div class="w-full bg-gray-200 dark:bg-slate-700 rounded-full h-2">
+                                            <div class="progress-bar bg-purple-500 h-2 rounded-full w-0" id="eveningBar"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Actions -->
+                            <div class="sm:col-span-2 bg-white dark:bg-slate-800 rounded-lg p-6 border border-gray-200 dark:border-slate-700">
+                                <h3 class="font-semibold text-lg mb-4">Data Management</h3>
+                                <div class="flex flex-col gap-2">
+                                    <button onclick="resetDay()" class="bg-orange-600 hover:bg-orange-700 dark:bg-orange-700 dark:hover:bg-orange-600 text-white font-medium py-2 rounded transition">
+                                        Reset Today's Habits
+                                    </button>
+                                    <button onclick="exportData()" class="bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 text-white font-medium py-2 rounded transition">
+                                        Export Data
+                                    </button>
+                                    <button onclick="clearAllData()" class="bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-600 text-white font-medium py-2 rounded transition">
+                                        Clear All Data
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      )}
 
-      {editing && <EditModal person={editing} onSave={saveAthlete} onClose={()=>setEditing(null)} />}
-      {viewing && <PersonDetail person={viewing} onClose={()=>setViewing(null)} onEdit={p=>{setViewing(null); setEditing(p);}} />}
-      {deleteConfirm && <ConfirmDelete name={deleteConfirm.name} onConfirm={()=>deleteAthlete(deleteConfirm.id)} onCancel={()=>setDeleteConfirm(null)} />}
+        <!-- Footer -->
+        <footer class="border-t border-gray-200 dark:border-slate-800 bg-gray-50 dark:bg-slate-900 mt-12">
+            <div class="max-w-7xl mx-auto px-4 py-6 sm:px-6 text-center text-sm text-gray-600 dark:text-gray-400">
+                <p>🧠 Educational tool inspired by Andrew Huberman's protocols. Not medical advice.</p>
+            </div>
+        </footer>
     </div>
-  );
-}
 
-const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(React.createElement(App));
-</script>
+    <!-- Wim Hof Breathing Modal -->
+    <div id="wimHofModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white dark:bg-slate-800 rounded-lg max-w-md w-full p-6 border border-gray-200 dark:border-slate-700">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-serif font-bold">Wim Hof Breathing</h2>
+                <button onclick="closeWimHofBreathing()" class="text-2xl leading-none opacity-50 hover:opacity-100">×</button>
+            </div>
+
+            <div id="wimHofContent" class="space-y-4">
+                <div id="wimHofPhase" class="text-center p-6 bg-blue-50 dark:bg-blue-900/20 rounded-lg border-2 border-blue-200 dark:border-blue-800">
+                    <p class="text-sm text-gray-600 dark:text-gray-400 font-medium">PHASE</p>
+                    <p class="text-4xl font-bold text-blue-600 dark:text-blue-400 mt-2" id="phaseText">Ready?</p>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mt-2" id="phaseDesc">Click start to begin</p>
+                </div>
+
+                <div id="wimHofCounter" class="text-center text-5xl font-bold text-blue-600 dark:text-blue-400 hidden" id="breathCount">0</div>
+
+                <div class="flex gap-2">
+                    <button id="wimHofStart" onclick="startWimHof()" class="flex-1 bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 text-white font-bold py-3 rounded transition">
+                        Start
+                    </button>
+                    <button id="wimHofReset" onclick="resetWimHof()" class="flex-1 bg-gray-600 hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 text-white font-bold py-3 rounded transition">
+                        Reset
+                    </button>
+                </div>
+
+                <div class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded p-3">
+                    <p class="text-xs font-medium text-yellow-800 dark:text-yellow-200">⚠️ Safety reminder</p>
+                    <p class="text-xs text-yellow-700 dark:text-yellow-300 mt-1">Always perform seated or lying down. Never in water or while driving.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sunlight Timer Modal -->
+    <div id="sunlightModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white dark:bg-slate-800 rounded-lg max-w-md w-full p-6 border border-gray-200 dark:border-slate-700">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-serif font-bold">Sunlight Timer</h2>
+                <button onclick="closeSunlightTimer()" class="text-2xl leading-none opacity-50 hover:opacity-100">×</button>
+            </div>
+
+            <div class="text-center p-6 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border-2 border-yellow-200 dark:border-yellow-800 mb-4">
+                <p class="text-5xl font-bold text-yellow-600 dark:text-yellow-400" id="sunlightTime">10:00</p>
+                <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">Direct sunlight exposure</p>
+            </div>
+
+            <div class="flex gap-2 mb-4">
+                <button onclick="startSunlightTimer()" id="sunStartBtn" class="flex-1 bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-600 text-white font-bold py-2 rounded transition">
+                    Start
+                </button>
+                <button onclick="pauseSunlightTimer()" id="sunPauseBtn" class="flex-1 bg-yellow-600 hover:bg-yellow-700 dark:bg-yellow-700 dark:hover:bg-yellow-600 text-white font-bold py-2 rounded transition hidden">
+                    Pause
+                </button>
+                <button onclick="resetSunlightTimer()" class="flex-1 bg-gray-600 hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 text-white font-bold py-2 rounded transition">
+                    Reset
+                </button>
+            </div>
+
+            <div class="text-sm text-gray-600 dark:text-gray-400 text-center">
+                <p>💡 Aim for 100,000+ lux of direct sunlight</p>
+                <p class="text-xs mt-2">No sunglasses</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hydration Calculator Modal -->
+    <div id="hydrationModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white dark:bg-slate-800 rounded-lg max-w-md w-full p-6 border border-gray-200 dark:border-slate-700">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-serif font-bold">Hydration Calculator</h2>
+                <button onclick="closeHydrationCalc()" class="text-2xl leading-none opacity-50 hover:opacity-100">×</button>
+            </div>
+
+            <div class="space-y-4">
+                <label class="block">
+                    <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Body weight (kg)</span>
+                    <input type="number" id="bodyWeight" class="w-full mt-2 px-3 py-2 border border-gray-300 dark:border-slate-600 rounded bg-gray-50 dark:bg-slate-700" placeholder="70" min="30" max="200">
+                </label>
+
+                <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                    <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Daily Target</p>
+                    <p class="text-3xl font-bold text-blue-600 dark:text-blue-400 mt-2" id="hydrationTarget">0</p>
+                    <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">ml per day</p>
+                    <p class="text-xs text-gray-600 dark:text-gray-400 mt-2">Formula: body weight × 35 ml (baseline) + activity adjustment</p>
+                </div>
+
+                <button onclick="saveBodyWeight()" class="w-full bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 text-white font-medium py-2 rounded transition">
+                    Save Weight
+                </button>
+                <button onclick="closeHydrationCalc()" class="w-full bg-gray-600 hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 text-white font-medium py-2 rounded transition">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main JavaScript -->
+    <script>
+        // ===== STATE MANAGEMENT =====
+        const QUOTES = [
+            "Sleep is the foundation of everything.",
+            "Hydration is non-negotiable.",
+            "Morning light determines your entire day.",
+            "Consistency beats intensity.",
+            "Movement is medicine.",
+            "Breathwork is a performance lever.",
+            "Stress is a tool, not a poison.",
+            "Your autonomic nervous system is trainable.",
+            "Small practices compound massively.",
+            "Recovery is where adaptation happens."
+        ];
+
+        const HABITS = {
+            morning: [
+                { id: 'morning-hydration', label: 'Hydration with electrolytes' },
+                { id: 'morning-sunlight', label: 'Direct sunlight exposure' },
+                { id: 'morning-caffeine-delay', label: 'Delay caffeine 90–120 min' },
+                { id: 'morning-movement', label: 'Light movement or stretching' },
+                { id: 'morning-wim-hof', label: 'Wim Hof Breathing (optional)' }
+            ],
+            midday: [
+                { id: 'midday-hydration', label: 'Hydration check-in' },
+                { id: 'midday-zone2', label: 'Zone 2 cardio' },
+                { id: 'midday-resistance', label: 'Resistance training' },
+                { id: 'midday-nsdr', label: 'NSDR / Yoga Nidra' }
+            ],
+            evening: [
+                { id: 'evening-light-dim', label: 'Dim ambient lights' },
+                { id: 'evening-screen', label: 'Screen blue-light reduction' },
+                { id: 'evening-routine', label: 'Sleep routine consistency' },
+                { id: 'evening-nutrition', label: 'Nutrition timing' }
+            ]
+        };
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeApp();
+            optimizeForMobile();
+        });
+
+        function optimizeForMobile() {
+            // Prevent zoom on double tap for faster interactions
+            let lastTouchEnd = 0;
+            document.addEventListener('touchend', function(event) {
+                let now = (new Date()).getTime();
+                if (now - lastTouchEnd <= 300) {
+                    event.preventDefault();
+                }
+                lastTouchEnd = now;
+            }, false);
+
+            // Add active state feedback for mobile
+            document.querySelectorAll('button, .habit-row').forEach(el => {
+                el.addEventListener('touchstart', function() {
+                    this.style.opacity = '0.7';
+                });
+                el.addEventListener('touchend', function() {
+                    this.style.opacity = '1';
+                });
+            });
+        }
+
+        function initializeApp() {
+            loadData();
+            setupEventListeners();
+            updateUI();
+            rotateQuote();
+            
+            // Set theme
+            const theme = localStorage.getItem('theme') || 'light';
+            applyTheme(theme);
+        }
+
+        // ===== DATA MANAGEMENT =====
+        function getDefaultData() {
+            return {
+                dailyChecks: {},
+                streak: 0,
+                history: [],
+                userSettings: { weight: 70, theme: 'light' },
+                zone2Weekly: 0,
+                strengthWeekly: 0,
+                weeklyNotes: {}
+            };
+        }
+
+        function loadData() {
+            const stored = localStorage.getItem('hubermanData');
+            const data = stored ? JSON.parse(stored) : getDefaultData();
+            
+            // Check if new day and reset daily checks
+            const today = getToday();
+            if (!data.lastChecked || data.lastChecked !== today) {
+                if (data.lastChecked && isConsecutiveDay(data.lastChecked, today)) {
+                    data.streak = (data.streak || 0) + 1;
+                } else if (data.lastChecked) {
+                    data.streak = 1;
+                }
+                data.dailyChecks = {};
+                data.lastChecked = today;
+                data.weekStart = getWeekStart();
+            }
+
+            window.appData = data;
+            return data;
+        }
+
+        function saveData() {
+            localStorage.setItem('hubermanData', JSON.stringify(window.appData));
+        }
+
+        function getToday() {
+            return new Date().toISOString().split('T')[0];
+        }
+
+        function getWeekStart() {
+            const today = new Date();
+            const first = today.getDate() - today.getDay();
+            return new Date(today.setDate(first)).toISOString().split('T')[0];
+        }
+
+        function isConsecutiveDay(lastDate, today) {
+            const last = new Date(lastDate);
+            const t = new Date(today);
+            const diff = Math.floor((t - last) / (1000 * 60 * 60 * 24));
+            return diff === 1;
+        }
+
+        // ===== EVENT LISTENERS =====
+        function setupEventListeners() {
+            // Habit checkboxes
+            document.querySelectorAll('.habit-check').forEach(cb => {
+                cb.addEventListener('change', handleHabitCheck);
+            });
+
+            // Habit rows (expand)
+            document.querySelectorAll('.habit-row').forEach(row => {
+                row.addEventListener('click', (e) => {
+                    if (e.target.closest('input[type="checkbox"]') || e.target.closest('button')) return;
+                    toggleExpand(row);
+                });
+            });
+
+            // Tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', switchTab);
+            });
+
+            // Theme toggle
+            document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+
+            // Input listeners for weekly tracking
+            document.getElementById('zone2Input').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') addZone2();
+            });
+            document.getElementById('strengthInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') addStrength();
+            });
+            document.getElementById('bodyWeight').addEventListener('input', updateHydrationTarget);
+        }
+
+        // ===== HABIT CHECKING =====
+        function handleHabitCheck(e) {
+            const checkbox = e.target;
+            const habitId = checkbox.dataset.habitId;
+            const category = checkbox.dataset.category;
+
+            if (checkbox.checked) {
+                checkbox.closest('.habit-row').classList.add('completed');
+                window.appData.dailyChecks[habitId] = Date.now();
+            } else {
+                checkbox.closest('.habit-row').classList.remove('completed');
+                delete window.appData.dailyChecks[habitId];
+            }
+
+            saveData();
+            updateUI();
+        }
+
+        function toggleExpand(row) {
+            const expanded = row.querySelector('.expanded-content');
+            if (!expanded) return;
+
+            if (expanded.classList.contains('hidden')) {
+                expanded.classList.remove('hidden');
+                expanded.classList.add('expand-card');
+            } else {
+                expanded.classList.add('hidden');
+                expanded.classList.remove('expand-card');
+            }
+        }
+
+        // ===== UI UPDATES =====
+        function updateUI() {
+            updateCompletion();
+            updateStreak();
+            updateWeekTotal();
+            updateCategoryRates();
+            updateMonthlyStats();
+        }
+
+        function updateCompletion() {
+            const today = getToday();
+            let completed = 0;
+            const total = Object.values(HABITS).flat().length;
+
+            Object.values(HABITS).flat().forEach(habit => {
+                if (window.appData.dailyChecks[habit.id]) {
+                    completed++;
+                }
+            });
+
+            const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
+            document.getElementById('completionPercent').textContent = percent + '%';
+
+            // Update checked state visually
+            document.querySelectorAll('.habit-check').forEach(cb => {
+                const habitId = cb.dataset.habitId;
+                cb.checked = !!window.appData.dailyChecks[habitId];
+                if (cb.checked) {
+                    cb.closest('.habit-row').classList.add('completed');
+                } else {
+                    cb.closest('.habit-row').classList.remove('completed');
+                }
+            });
+        }
+
+        function updateStreak() {
+            document.getElementById('streakCount').textContent = window.appData.streak || 0;
+        }
+
+        function updateWeekTotal() {
+            let weekTotal = 0;
+            const weekStart = window.appData.weekStart || getWeekStart();
+            
+            Object.values(HABITS).flat().forEach(habit => {
+                const timestamp = window.appData.dailyChecks[habit.id];
+                if (timestamp && isWithinWeek(timestamp, weekStart)) {
+                    weekTotal++;
+                }
+            });
+
+            document.getElementById('weekTotal').textContent = weekTotal;
+        }
+
+        function isWithinWeek(timestamp, weekStart) {
+            const date = new Date(timestamp).toISOString().split('T')[0];
+            return date >= weekStart;
+        }
+
+        function updateCategoryRates() {
+            const categories = ['morning', 'midday', 'evening'];
+            const weekStart = window.appData.weekStart || getWeekStart();
+
+            categories.forEach(category => {
+                const habits = HABITS[category];
+                let completed = 0;
+
+                habits.forEach(habit => {
+                    const timestamp = window.appData.dailyChecks[habit.id];
+                    if (timestamp && isWithinWeek(timestamp, weekStart)) {
+                        completed++;
+                    }
+                });
+
+                const rate = habits.length > 0 ? Math.round((completed / habits.length) * 100) : 0;
+                document.getElementById(category + 'Rate').textContent = rate + '%';
+                document.getElementById(category + 'Bar').style.width = rate + '%';
+            });
+        }
+
+        function updateMonthlyStats() {
+            const now = new Date();
+            const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
+            let monthTotal = 0;
+            let bestDay = 0;
+            let bestDayDate = 'No data';
+
+            const dayCounts = {};
+
+            // Aggregate by day
+            Object.entries(window.appData.dailyChecks).forEach(([habitId, timestamp]) => {
+                const date = new Date(timestamp).toISOString().split('T')[0];
+                if (date >= monthStart) {
+                    monthTotal++;
+                    dayCounts[date] = (dayCounts[date] || 0) + 1;
+                }
+            });
+
+            // Find best day
+            Object.entries(dayCounts).forEach(([date, count]) => {
+                if (count > bestDay) {
+                    bestDay = count;
+                    bestDayDate = new Date(date).toLocaleDateString('en-US', { 
+                        month: 'short', 
+                        day: 'numeric' 
+                    });
+                }
+            });
+
+            document.getElementById('monthlyCompletions').textContent = monthTotal;
+            document.getElementById('bestDay').textContent = bestDay;
+            document.getElementById('bestDayDate').textContent = bestDay > 0 ? bestDayDate : 'No data yet';
+        }
+
+        // ===== TAB SWITCHING =====
+        function switchTab(e) {
+            const tabName = e.target.dataset.tab;
+
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.add('hidden');
+            });
+
+            // Show selected tab
+            document.getElementById(tabName).classList.remove('hidden');
+
+            // Update button states
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                if (btn.dataset.tab === tabName) {
+                    btn.classList.add('text-blue-600', 'dark:text-blue-400');
+                    btn.classList.remove('text-gray-600', 'dark:text-gray-400');
+                    btn.classList.add('border-blue-600', 'dark:border-blue-400');
+                } else {
+                    btn.classList.remove('text-blue-600', 'dark:text-blue-400');
+                    btn.classList.add('text-gray-600', 'dark:text-gray-400');
+                    btn.classList.remove('border-blue-600', 'dark:border-blue-400');
+                    btn.classList.add('border-transparent');
+                }
+            });
+        }
+
+        // ===== THEME MANAGEMENT =====
+        function toggleTheme() {
+            const html = document.documentElement;
+            const isDark = html.classList.contains('dark');
+            const newTheme = isDark ? 'light' : 'dark';
+            applyTheme(newTheme);
+        }
+
+        function applyTheme(theme) {
+            const html = document.documentElement;
+            const icon = document.getElementById('themeIcon');
+
+            if (theme === 'dark') {
+                html.classList.add('dark');
+                icon.textContent = '☀️';
+            } else {
+                html.classList.remove('dark');
+                icon.textContent = '🌙';
+            }
+
+            window.appData.userSettings.theme = theme;
+            saveData();
+        }
+
+        // ===== MODALS =====
+        function openWimHofBreathing() {
+            document.getElementById('wimHofModal').classList.remove('hidden');
+        }
+
+        function closeWimHofBreathing() {
+            document.getElementById('wimHofModal').classList.add('hidden');
+        }
+
+        function openHydrationCalc() {
+            document.getElementById('hydrationModal').classList.remove('hidden');
+            const weight = window.appData.userSettings.weight || 70;
+            document.getElementById('bodyWeight').value = weight;
+            updateHydrationTarget();
+        }
+
+        function closeHydrationCalc() {
+            document.getElementById('hydrationModal').classList.add('hidden');
+        }
+
+        function openSunlightTimer() {
+            document.getElementById('sunlightModal').classList.remove('hidden');
+            resetSunlightTimer();
+        }
+
+        function closeSunlightTimer() {
+            document.getElementById('sunlightModal').classList.add('hidden');
+        }
+
+        // ===== WIM HOF BREATHING =====
+        let wimHofState = {
+            phase: 'idle',
+            count: 0,
+            totalBreaths: 40,
+            holdDuration: 15,
+            recoveryDuration: 15,
+            interval: null
+        };
+
+        function startWimHof() {
+            if (wimHofState.phase === 'idle') {
+                wimHofState.phase = 'breathing';
+                wimHofState.count = 0;
+                updateWimHofDisplay();
+                runWimHofBreathing();
+            }
+        }
+
+        function runWimHofBreathing() {
+            wimHofState.interval = setInterval(() => {
+                if (wimHofState.phase === 'breathing') {
+                    wimHofState.count++;
+                    updateWimHofDisplay();
+
+                    if (wimHofState.count >= wimHofState.totalBreaths) {
+                        wimHofState.phase = 'hold';
+                        wimHofState.count = wimHofState.holdDuration;
+                        runHoldPhase();
+                    }
+                }
+            }, 500);
+        }
+
+        function runHoldPhase() {
+            clearInterval(wimHofState.interval);
+            wimHofState.interval = setInterval(() => {
+                wimHofState.count--;
+                updateWimHofDisplay();
+
+                if (wimHofState.count <= 0) {
+                    wimHofState.phase = 'recovery';
+                    wimHofState.count = wimHofState.recoveryDuration;
+                    runRecoveryPhase();
+                }
+            }, 1000);
+        }
+
+        function runRecoveryPhase() {
+            clearInterval(wimHofState.interval);
+            wimHofState.interval = setInterval(() => {
+                wimHofState.count--;
+                updateWimHofDisplay();
+
+                if (wimHofState.count <= 0) {
+                    wimHofState.phase = 'complete';
+                    updateWimHofDisplay();
+                    clearInterval(wimHofState.interval);
+                    setTimeout(() => {
+                        markWimHofComplete();
+                    }, 1000);
+                }
+            }, 1000);
+        }
+
+        function updateWimHofDisplay() {
+            const phaseEl = document.getElementById('phaseText');
+            const descEl = document.getElementById('phaseDesc');
+            const countEl = document.getElementById('breathCount');
+
+            if (wimHofState.phase === 'breathing') {
+                phaseEl.textContent = 'BREATHE';
+                descEl.textContent = `${wimHofState.count} / ${wimHofState.totalBreaths} breaths`;
+                countEl.classList.remove('hidden');
+                countEl.textContent = wimHofState.count;
+            } else if (wimHofState.phase === 'hold') {
+                phaseEl.textContent = 'HOLD';
+                descEl.textContent = `${wimHofState.count} seconds`;
+                countEl.classList.remove('hidden');
+                countEl.textContent = wimHofState.count;
+            } else if (wimHofState.phase === 'recovery') {
+                phaseEl.textContent = 'RECOVERY';
+                descEl.textContent = `${wimHofState.count} seconds`;
+                countEl.classList.remove('hidden');
+                countEl.textContent = wimHofState.count;
+            } else if (wimHofState.phase === 'complete') {
+                phaseEl.textContent = '✓ COMPLETE';
+                descEl.textContent = 'Great work!';
+                countEl.classList.add('hidden');
+            } else {
+                phaseEl.textContent = 'Ready?';
+                descEl.textContent = 'Click start to begin';
+                countEl.classList.add('hidden');
+            }
+        }
+
+        function resetWimHof() {
+            clearInterval(wimHofState.interval);
+            wimHofState = {
+                phase: 'idle',
+                count: 0,
+                totalBreaths: 40,
+                holdDuration: 15,
+                recoveryDuration: 15,
+                interval: null
+            };
+            updateWimHofDisplay();
+        }
+
+        function markWimHofComplete() {
+            window.appData.dailyChecks['morning-wim-hof'] = Date.now();
+            saveData();
+            updateUI();
+            closeWimHofBreathing();
+        }
+
+        // ===== SUNLIGHT TIMER =====
+        let sunlightTimer = {
+            remaining: 600,
+            interval: null,
+            running: false
+        };
+
+        function startSunlightTimer() {
+            if (!sunlightTimer.running) {
+                sunlightTimer.running = true;
+                document.getElementById('sunStartBtn').classList.add('hidden');
+                document.getElementById('sunPauseBtn').classList.remove('hidden');
+
+                openSunlightTimer();
+
+                sunlightTimer.interval = setInterval(() => {
+                    sunlightTimer.remaining--;
+                    updateSunlightDisplay();
+
+                    if (sunlightTimer.remaining <= 0) {
+                        clearInterval(sunlightTimer.interval);
+                        sunlightTimer.running = false;
+                        markSunlightComplete();
+                    }
+                }, 1000);
+            }
+        }
+
+        function pauseSunlightTimer() {
+            clearInterval(sunlightTimer.interval);
+            sunlightTimer.running = false;
+            document.getElementById('sunStartBtn').classList.remove('hidden');
+            document.getElementById('sunPauseBtn').classList.add('hidden');
+        }
+
+        function resetSunlightTimer() {
+            pauseSunlightTimer();
+            sunlightTimer.remaining = 600;
+            updateSunlightDisplay();
+        }
+
+        function updateSunlightDisplay() {
+            const mins = Math.floor(sunlightTimer.remaining / 60);
+            const secs = sunlightTimer.remaining % 60;
+            const display = `${mins}:${secs.toString().padStart(2, '0')}`;
+            document.getElementById('sunlightTime').textContent = display;
+        }
+
+        function markSunlightComplete() {
+            window.appData.dailyChecks['morning-sunlight'] = Date.now();
+            saveData();
+            updateUI();
+            document.getElementById('sunlightTime').textContent = '✓ Complete';
+        }
+
+        // ===== HYDRATION CALCULATOR =====
+        function updateHydrationTarget() {
+            const weight = parseFloat(document.getElementById('bodyWeight').value) || 70;
+            window.appData.userSettings.weight = weight;
+            const target = Math.round(weight * 35);
+            document.getElementById('hydrationTarget').textContent = target.toLocaleString();
+        }
+
+        function saveBodyWeight() {
+            updateHydrationTarget();
+            saveData();
+            alert('Weight saved!');
+        }
+
+        // ===== WEEKLY TRACKING =====
+        function addZone2() {
+            const input = document.getElementById('zone2Input');
+            const value = parseInt(input.value) || 0;
+            
+            if (value > 0) {
+                const weekStart = window.appData.weekStart || getWeekStart();
+                const key = `zone2_${weekStart}`;
+                window.appData.zone2Weekly = (window.appData.zone2Weekly || 0) + value;
+                input.value = '';
+                saveData();
+                updateZone2Display();
+            }
+        }
+
+        function addStrength() {
+            const input = document.getElementById('strengthInput');
+            const value = parseInt(input.value) || 0;
+
+            if (value > 0) {
+                const weekStart = window.appData.weekStart || getWeekStart();
+                const key = `strength_${weekStart}`;
+                window.appData.strengthWeekly = (window.appData.strengthWeekly || 0) + value;
+                input.value = '';
+                saveData();
+                updateStrengthDisplay();
+            }
+        }
+
+        function updateZone2Display() {
+            document.getElementById('zone2Total').textContent = window.appData.zone2Weekly || 0;
+        }
+
+        function updateStrengthDisplay() {
+            document.getElementById('strengthTotal').textContent = window.appData.strengthWeekly || 0;
+        }
+
+        function saveWeeklyNotes() {
+            const notes = document.getElementById('weeklyNotes').value;
+            const weekStart = window.appData.weekStart || getWeekStart();
+            window.appData.weeklyNotes[weekStart] = notes;
+            saveData();
+            alert('Notes saved!');
+        }
+
+        // ===== DATA MANAGEMENT =====
+        function resetDay() {
+            if (confirm('Reset today\'s habits?')) {
+                window.appData.dailyChecks = {};
+                saveData();
+                updateUI();
+            }
+        }
+
+        function exportData() {
+            const dataStr = JSON.stringify(window.appData, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `huberman-data-${getToday()}.json`;
+            link.click();
+        }
+
+        function clearAllData() {
+            if (confirm('Clear ALL data? This cannot be undone.')) {
+                localStorage.removeItem('hubermanData');
+                location.reload();
+            }
+        }
+
+        // ===== UTILITY =====
+        function rotateQuote() {
+            const quote = QUOTES[Math.floor(Math.random() * QUOTES.length)];
+            document.getElementById('dailyQuote').textContent = quote;
+        }
+    </script>
 </body>
 </html>
