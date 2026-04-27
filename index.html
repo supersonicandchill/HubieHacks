@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -177,44 +176,87 @@
             }
         }
 
-        /* Tab nav mobile optimization */
+        /* Tab nav buttons - clean outlined style */
         nav {
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
         }
 
+        .tab-btn {
+            position: relative;
+            padding: 10px 16px !important;
+            border: 2px solid rgb(209, 213, 219);
+            border-radius: 6px;
+            background: transparent;
+            transition: all 0.2s ease;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            color: rgb(107, 114, 128);
+        }
+
+        .dark .tab-btn {
+            color: rgb(156, 163, 175);
+            border-color: rgb(71, 85, 105);
+        }
+
+        .tab-btn:hover {
+            border-color: rgb(59, 130, 246);
+            background-color: rgba(59, 130, 246, 0.05);
+            color: rgb(59, 130, 246);
+        }
+
+        .dark .tab-btn:hover {
+            border-color: rgb(96, 165, 250);
+            background-color: rgba(96, 165, 250, 0.1);
+            color: rgb(96, 165, 250);
+        }
+
+        .tab-btn.active {
+            color: rgb(59, 130, 246);
+            border-color: rgb(59, 130, 246);
+            background-color: rgba(59, 130, 246, 0.08);
+            font-weight: 600;
+        }
+
+        .dark .tab-btn.active {
+            color: rgb(96, 165, 250);
+            border-color: rgb(96, 165, 250);
+            background-color: rgba(96, 165, 250, 0.1);
+        }
+
         @media (max-width: 1024px) {
             nav {
                 display: flex;
-                gap: 0;
-                border-bottom: 2px solid;
-                border-color: inherit;
-                border-right: none;
-                border-left: none;
-                border-top: none;
+                gap: 8px;
+                padding: 12px;
+                border-bottom: 1px solid rgb(229, 231, 235);
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
             }
 
-            nav button {
-                min-width: 20%;
-                text-align: center;
-                border-right: 1px solid;
-                border-bottom: none;
-                border-left: none;
-                border-top: none;
-                border-radius: 0;
-                padding: 12px 8px;
+            .dark nav {
+                border-bottom-color: rgb(51, 65, 85);
             }
 
-            nav button:last-child {
-                border-right: none;
+            .tab-btn {
+                flex-shrink: 0;
+                padding: 10px 12px !important;
+                font-size: 14px;
+                white-space: nowrap;
             }
         }
 
         @media (max-width: 640px) {
-            nav button {
-                min-width: 25%;
-                padding: 10px 6px;
-                font-size: 12px;
+            nav {
+                gap: 6px;
+                padding: 10px;
+            }
+
+            .tab-btn {
+                padding: 8px 10px !important;
+                font-size: 13px;
+                border-radius: 5px;
             }
         }
 
@@ -313,23 +355,23 @@
                 <!-- Sidebar Navigation -->
                 <aside class="lg:col-span-1 border-b lg:border-b-0 lg:border-r border-gray-200 dark:border-slate-800 order-first lg:order-none">
                     <nav class="flex lg:flex-col gap-0 overflow-x-auto lg:overflow-x-visible">
-                        <button class="tab-btn flex-shrink-0 lg:flex-shrink flex-1 lg:flex-none p-3 lg:p-4 text-left hover:bg-gray-100 dark:hover:bg-slate-800 transition font-medium text-blue-600 dark:text-blue-400 border-b-2 lg:border-b-0 lg:border-r-2 border-blue-600 dark:border-blue-400" data-tab="morning">
+                        <button class="tab-btn active" data-tab="morning">
                             <span class="hidden sm:inline">🌅 Morning</span>
                             <span class="sm:hidden">🌅</span>
                         </button>
-                        <button class="tab-btn flex-shrink-0 lg:flex-shrink flex-1 lg:flex-none p-3 lg:p-4 text-left hover:bg-gray-100 dark:hover:bg-slate-800 transition font-medium border-b-2 lg:border-b-0 lg:border-r-2 border-transparent" data-tab="midday">
+                        <button class="tab-btn" data-tab="midday">
                             <span class="hidden sm:inline">☀️ Midday</span>
                             <span class="sm:hidden">☀️</span>
                         </button>
-                        <button class="tab-btn flex-shrink-0 lg:flex-shrink flex-1 lg:flex-none p-3 lg:p-4 text-left hover:bg-gray-100 dark:hover:bg-slate-800 transition font-medium border-b-2 lg:border-b-0 lg:border-r-2 border-transparent" data-tab="evening">
+                        <button class="tab-btn" data-tab="evening">
                             <span class="hidden sm:inline">🌆 Evening</span>
                             <span class="sm:hidden">🌆</span>
                         </button>
-                        <button class="tab-btn flex-shrink-0 lg:flex-shrink flex-1 lg:flex-none p-3 lg:p-4 text-left hover:bg-gray-100 dark:hover:bg-slate-800 transition font-medium border-b-2 lg:border-b-0 lg:border-r-2 border-transparent" data-tab="weekly">
+                        <button class="tab-btn" data-tab="weekly">
                             <span class="hidden sm:inline">📊 Weekly</span>
                             <span class="sm:hidden">📊</span>
                         </button>
-                        <button class="tab-btn flex-shrink-0 lg:flex-shrink flex-1 lg:flex-none p-3 lg:p-4 text-left hover:bg-gray-100 dark:hover:bg-slate-800 transition font-medium border-b-2 lg:border-b-0 lg:border-r-2 border-transparent" data-tab="progress">
+                        <button class="tab-btn" data-tab="progress">
                             <span class="hidden sm:inline">📈 Progress</span>
                             <span class="sm:hidden">📈</span>
                         </button>
@@ -1164,14 +1206,9 @@
             // Update button states
             document.querySelectorAll('.tab-btn').forEach(btn => {
                 if (btn.dataset.tab === tabName) {
-                    btn.classList.add('text-blue-600', 'dark:text-blue-400');
-                    btn.classList.remove('text-gray-600', 'dark:text-gray-400');
-                    btn.classList.add('border-blue-600', 'dark:border-blue-400');
+                    btn.classList.add('active');
                 } else {
-                    btn.classList.remove('text-blue-600', 'dark:text-blue-400');
-                    btn.classList.add('text-gray-600', 'dark:text-gray-400');
-                    btn.classList.remove('border-blue-600', 'dark:border-blue-400');
-                    btn.classList.add('border-transparent');
+                    btn.classList.remove('active');
                 }
             });
         }
