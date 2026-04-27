@@ -1193,7 +1193,10 @@
 
         // ===== TAB SWITCHING =====
         function switchTab(e) {
-            const tabName = e.target.dataset.tab;
+            const button = e.target.closest('.tab-btn');
+            if (!button) return;
+            
+            const tabName = button.dataset.tab;
 
             // Hide all tabs
             document.querySelectorAll('.tab-content').forEach(tab => {
